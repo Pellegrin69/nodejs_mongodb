@@ -70,29 +70,63 @@ Exercice 1
 
 Affichez l’identifiant et le nom des salles qui sont des SMAC.
 
+```shell
+db.salles.find({"smac": 1}, {"nom": 1})
+```
+
 Exercice 2
 
 Affichez le nom des salles qui possèdent une capacité d’accueil strictement supérieure à 1000 places.
+
+```shell
+db.salles.find({"capacite": {$gt: 1000}}, {"nom": 1})
+```
 
 Exercice 3
 
 Affichez l’identifiant des salles pour lesquelles le champ adresse ne comporte pas de numéro.
 
+```shell
+db.salles.find({"adresse.numero": {$exists: 0}}, {"_id": 1})
+```
+
 Exercice 4
 
 Affichez l’identifiant puis le nom des salles qui ont exactement un avis.
+
+```shell
+db.salles.find({"avis" : {$size: 1}}, {"nom": 1})
+```
 
 Exercice 5
 
 Affichez tous les styles musicaux des salles qui programment notamment du blues.
 
+```shell
+db.salles.find({"styles" : "blues"}, {"_id": 0, "nom": 1, "styles": 1})
+```
+
 Exercice 6
 
 Affichez tous les styles musicaux des salles qui ont le style « blues » en première position dans leur tableau styles.
 
+```shell
+db.salles.find({"styles.0" : "blues"}, {"_id": 0, "nom": 1, "styles": 1})
+```
+
 Exercice 7
 
 Affichez la ville des salles dont le code postal commence par 84 et qui ont une capacité strictement inférieure à 500 places (pensez à utiliser une expression régulière).
+
+```shell
+db.salles.find({"adresse.codePostal" : { $regex: /^84/, $options: 'm' } , "capacite" : {$lt: 500}}, {"_id": 0, "adresse.ville": 1})
+```
+
+OU
+
+```shell
+db.salles.find({"adresse.codePostal" : /84/, "capacite" : {$lt: 500}}, {"_id": 0, "adresse.ville": 1})
+```
 
 Exercice 8
 

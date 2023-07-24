@@ -1,4 +1,4 @@
-Voici la base de donnees qui permet d'effectuer la serie d'exercices : 
+Voici la base de donnees qui permet d'effectuer la serie d'exercices :
 
 ```
 db.salles.insertMany([ 
@@ -116,7 +116,8 @@ db.salles.find({"styles.0" : "blues"}, {"_id": 0, "nom": 1, "styles": 1})
 
 Exercice 7
 
-Affichez la ville des salles dont le code postal commence par 84 et qui ont une capacité strictement inférieure à 500 places (pensez à utiliser une expression régulière).
+Affichez la ville des salles dont le code postal commence par 84 et qui ont une capacité strictement inférieure à 500
+places (pensez à utiliser une expression régulière).
 
 ```shell
 db.salles.find({"adresse.codePostal" : { $regex: /^84/, $options: 'm' } , "capacite" : {$lt: 500}}, {"_id": 0, "adresse.ville": 1})
@@ -132,70 +133,160 @@ Exercice 8
 
 Affichez l’identifiant pour les salles dont l’identifiant est pair ou le champ avis est absent.
 
+```shell
+db.salles.find({ $or: [{ "_id": { $mod: [2, 0] } }, { "avis": { $exists: false } }] }, { "_id": 1 })
+```
+
 Exercice 9
 
 Affichez le nom des salles dont au moins un des avis comporte une note comprise entre 8 et 10 (tous deux inclus).
 
+```shell
+db.salles.find({ "avis.note": { $gte: 8, $lte: 10 } }, { "nom": 1 })
+```
+
 Exercice 10
 
-Affichez le nom des salles dont au moins un des avis comporte une date postérieure au 15/11/2019 (pensez à utiliser le type JavaScript Date).
+Affichez le nom des salles dont au moins un des avis comporte une date postérieure au 15/11/2019 (pensez à utiliser le
+type JavaScript Date).
+
+```shell
+db.salles.find({ "avis.date": { $gt: new Date('2019-11-15') } }, { "nom": 1 })
+```
 
 Exercice 11
 
-Affichez le nom ainsi que la capacité des salles dont le produit de la valeur de l’identifiant par 100 est strictement supérieur à la capacité.
+Affichez le nom ainsi que la capacité des salles dont le produit de la valeur de l’identifiant par 100 est strictement
+supérieur à la capacité.
+
+```shell
+db.salles.find({ $expr: { $gt: [{ $multiply: ["$_id", 100] }, "$capacite"] } }, { "nom": 1, "capacite": 1 })
+```
 
 Exercice 12
 
-Affichez le nom des salles de type SMAC programmant plus de deux styles de musiques différents en utilisant l’opérateur $where qui permet de faire usage de JavaScript.
+Affichez le nom des salles de type SMAC programmant plus de deux styles de musiques différents en utilisant l’opérateur
+$where qui permet de faire usage de JavaScript.
+
+```shell
+db.salles.find({ "smac": true, $where: function() {
+    return Array.isArray(this.styles) && this.styles.length > 2;
+  }}, { "_id": 0, "nom": 1 })
+
+```
 
 Exercice 13
 
 Affichez les différents codes postaux présents dans les documents de la collection salles.
 
+```shell
+db.salles.distinct("adresse.codePostal")
+```
+
 Exercice 14
 
 Mettez à jour tous les documents de la collection salles en rajoutant 100 personnes à leur capacité actuelle.
+
+```shell
+db.salles.updateMany({}, { $inc: { "capacite": 100 } })
+```
 
 Exercice 15
 
 Ajoutez le style « jazz » à toutes les salles qui n’en programment pas.
 
+```shell
+db.salles.updateMany({ "styles": { $ne: "jazz" } }, { $push: { "styles": "jazz" } })
+```
+
 Exercice 16
 
 Retirez le style «funk» à toutes les salles dont l’identifiant n’est égal ni à 2, ni à 3.
+
+```shell
+db.salles.updateMany({ "_id": { $nin: [2, 3] } }, { $pull: { "styles": "funk" } })
+```
 
 Exercice 17
 
 Ajoutez un tableau composé des styles «techno» et « reggae » à la salle dont l’identifiant est 3.
 
+```shell
+db.salles.updateOne({ "_id": 3 }, { $push: { "styles": { $each: ["techno", "reggae"] } } })
+```
+
 Exercice 18
 
-Pour les salles dont le nom commence par la lettre P (majuscule ou minuscule), augmentez la capacité de 150 places et rajoutez un champ de type tableau nommé contact dans lequel se trouvera un document comportant un champ nommé telephone dont la valeur sera « 04 11 94 00 10 ».
+Pour les salles dont le nom commence par la lettre P (majuscule ou minuscule), augmentez la capacité de 150 places et
+rajoutez un champ de type tableau nommé contact dans lequel se trouvera un document comportant un champ nommé telephone
+dont la valeur sera « 04 11 94 00 10 ».
+
+```shell
+db.salles.updateMany({ "nom": { $regex: /^P/i } }, { $inc: { "capacite": 150 }, $set: { "contact": { "telephone": "04 11 94 00 10" } } })
+```
 
 Exercice 19
 
-Pour les salles dont le nom commence par une voyelle (peu importe la casse, là aussi), rajoutez dans le tableau avis un document composé du champ date valant la date courante et du champ note valant 10 (double ou entier). L’expression régulière pour chercher une chaîne de caractères débutant par une voyelle suivie de n’importe quoi d’autre est [^aeiou]+$.
+Pour les salles dont le nom commence par une voyelle (peu importe la casse, là aussi), rajoutez dans le tableau avis un
+document composé du champ date valant la date courante et du champ note valant 10 (double ou entier). L’expression
+régulière pour chercher une chaîne de caractères débutant par une voyelle suivie de n’importe quoi d’autre
+est [^aeiou]+$.
+
+```shell
+db.salles.updateMany({ "nom": { $regex: /^[aeiou]/i } }, { $push: { "avis": { "date": new Date(), "note": 10 } } })
+```
 
 Exercice 20
 
-En mode upsert, vous mettrez à jour tous les documents dont le nom commence par un z ou un Z en leur affectant comme nom « Pub Z », comme valeur du champ capacite 50 personnes (type entier et non décimal) et en positionnant le champ booléen smac à la valeur « false ».
+En mode upsert, vous mettrez à jour tous les documents dont le nom commence par un z ou un Z en leur affectant comme
+nom « Pub Z », comme valeur du champ capacite 50 personnes (type entier et non décimal) et en positionnant le champ
+booléen smac à la valeur « false ».
+
+```shell
+db.salles.updateMany({ "nom": { $regex: /^z/i } }, { $set: { "nom": "Pub Z", "capacite": 50, "smac": false } }, { upsert: true })
+```
 
 Exercice 21
 
 Affichez le décompte des documents pour lesquels le champ _id est de type « objectId ».
 
+```shell
+db.salles.count({ "_id": { $type: "objectId" } })
+```
+
 Exercice 22
 
-Pour les documents dont le champ _id n’est pas de type « objectId », affichez le nom de la salle ayant la plus grande capacité. Pour y parvenir, vous effectuerez un tri dans l’ordre qui convient tout en limitant le nombre de documents affichés pour ne retourner que celui qui comporte la capacité maximale.
+Pour les documents dont le champ _id n’est pas de type « objectId », affichez le nom de la salle ayant la plus grande
+capacité. Pour y parvenir, vous effectuerez un tri dans l’ordre qui convient tout en limitant le nombre de documents
+affichés pour ne retourner que celui qui comporte la capacité maximale.
+
+```shell
+db.salles.find({ "_id": { $not: { $type: "objectId" } } }, { "nom": 1, "capacite": 1 }).sort({ "capacite": -1 }).limit(1)
+```
 
 Exercice 23
 
-Remplacez, sur la base de la valeur de son champ _id, le document créé à l’exercice 20 par un document contenant seulement le nom préexistant et la capacité, que vous monterez à 60 personnes.
+Remplacez, sur la base de la valeur de son champ _id, le document créé à l’exercice 20 par un document contenant
+seulement le nom préexistant et la capacité, que vous monterez à 60 personnes.
+
+```shell
+db.salles.replaceOne({ "_id": ObjectId("object_id") }, { "nom": "Pub Z", "capacite": 60 })
+```
 
 Exercice 24
 
-Effectuez la suppression d’un seul document avec les critères suivants : le champ _id est de type « objectId » et la capacité de la salle est inférieure ou égale à 60 personnes.
+Effectuez la suppression d’un seul document avec les critères suivants : le champ _id est de type « objectId » et la
+capacité de la salle est inférieure ou égale à 60 personnes.
+
+```shell
+db.salles.deleteOne({ "_id": { $type: "objectId" }, "capacite": { $lte: 60 } })
+```
 
 Exercice 25
 
-À l’aide de la méthode permettant de trouver un seul document et de le mettre à jour en même temps, réduisez de 15 personnes la capacité de la salle située à Nîmes.
+À l’aide de la méthode permettant de trouver un seul document et de le mettre à jour en même temps, réduisez de 15
+personnes la capacité de la salle située à Nîmes.
+
+```shell
+db.salles.findOneAndUpdate({ "nom": { $regex: /^[Zz]/ } }, { $inc: { "capacite": -15 } })
+```

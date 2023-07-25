@@ -82,17 +82,26 @@ db.personnes.find({   $or: [{
 ```
 
 $where : éxectuer du js sous la forme d'un string ou d'une fonction
+
 interdit sur mongodb atlas car très dangereux, le temps d'éxécution peut devenir montrueux
+
 il parcourt tous les documents de personnes
+
 
 this ou obj designe le document d'éxécution en cours d'étude dans la fonction ou la string de $where
 
 $expr pour remplacer $where askip
 
+
 Mongodb stock en bson
+
 Comme le json, un type pour stocker tous les nombres
+
 le schéma des documents (équivalent des tuples) en mongo est dynamique
 
+
 mongoose (dépendance js qui permet de communiquer avec mongodb) est un ODM (Objet Document Mappeur)
+
 il existe aussi la dépendance mongodb, la dep officielle, mais mongoose permet plus de chose
+
 ORM (Object Relational Mapper)

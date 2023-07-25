@@ -1,0 +1,28 @@
+{
+  "name": "nodejs_mongodb",
+  "version": "1.0.0",
+  "description": "Final work for my nodejs and mongodb course",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Pellegrin69/nodejs_mongodb.git"
+  },
+  "author": "Pierre P.",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Pellegrin69/nodejs_mongodb/issues"
+  },
+  "homepage": "https://github.com/Pellegrin69/nodejs_mongodb#readme",
+  "dependencies": {
+    "bcryptjs": "^2.4.3",
+    "body-parser": "^1.20.2",
+    "dotenv": "^16.3.1",
+    "express": "^4.18.2",
+    "jsonwebtoken": "^9.0.1",
+    "mongoose": "^7.4.1",
+    "morgan": "^1.10.0"
+  }
+}

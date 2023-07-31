@@ -1,10 +1,11 @@
-const express = require('express')
-const mongoose = require('mongoose')
-const bodyParser = require('body-parser')
-const morgan = require('morgan')
+import express from 'express';
+import bodyParser from 'body-parser';
+import morgan from 'morgan';
+import dotenv from 'dotenv';
+import mongoose from "mongoose";
 
 // Charger les variables d'environnement à partir du fichier .env
-require('dotenv').config()
+dotenv.config();
 
 // Initialiser Express
 const app = express();

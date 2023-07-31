@@ -4,7 +4,7 @@ exports.getAllUsers = (req, res) => {
     }])
 }
 
-exports.createUsers = (req, res) => {
+exports.createUser = (req, res) => {
     const name = req.body.name;
 
     res.status(201).json({

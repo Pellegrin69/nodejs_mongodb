@@ -43,11 +43,6 @@ app.use((err, req, res, next) => {
     next(err);
 });
 
-// Dernier middleware pour gérer les erreurs non capturées
-app.use((err, req, res, next) => {
-    res.status(500).json({ error: 'Une erreur est survenue lors du traitement de votre requête.' });
-});
-
 mongoose.connect(process.env.MONGO_CONNECTION_STRING)
     .then(() => {
         console.log('App is succesfully connected to mongo');

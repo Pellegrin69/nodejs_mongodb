@@ -1,9 +1,16 @@
 import User from '../models/user.js';
+import { validationResult } from 'express-validator';
 import bcrypt from 'bcryptjs';
 
 
 // Création d'un utilisateur
 export const registerUser = async (req, res) => {
+    // Vérifier les erreurs de validation
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+        return res.status(422).json({ errors: errors.array() });
+    }
+
     const { name, email, password } = req.body;
 
     try {
@@ -30,7 +37,10 @@ export const registerUser = async (req, res) => {
 export const getAllUsers = async (req, res) => {
     try {
         const users = await User.find();
-        res.status(200).json(users);
+        const usersDTO = users.map(user => {
+            return { name: user.name, email: user.email };
+        });
+        res.status(200).json(usersDTO);
     } catch (err) {
         res.status(500).json({error: err.message});
     }

@@ -15,6 +15,10 @@ app.use(bodyParser.urlencoded({ extended: false })); // Parser les requêtes URL
 app.use(morgan('dev')); // Utiliser le middleware de journalisation en mode développement
 
 
+const usersRoutes = require('./routes/users')
+
+app.use('/api/users', usersRoutes)
+
 mongoose.connect(process.env.MONGO_CONNECTION_STRING)
     .then(() => {
         console.log('App is succesfully connected to mongo');

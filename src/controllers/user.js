@@ -45,3 +45,68 @@ export const getAllUsers = async (req, res) => {
         res.status(500).json({error: err.message});
     }
 };
+
+// Récupérer un utilisateur
+export const getOneUser = async (req, res) => {
+    try {
+        const userId = req.params.id;
+
+        const existingUser = await User.findById(userId);
+        if (!existingUser) {
+            return res.status(404).json({message: 'Utilisateur non trouvé.'});
+        }
+
+        const userDTO = {name: existingUser.name, email: existingUser.email};
+        res.status(200).json(userDTO);
+    } catch (err) {
+        res.status(500).json({error: err.message});
+    }
+};
+
+// Mettre à jour un utilisateur
+export const updateUser = async (req, res) => {
+    const {name, email} = req.body;
+    const userId = req.params.id;
+
+    try {
+        // Vérifier si l'utilisateur existe
+        const existingUser = await User.findById(userId);
+        if (!existingUser) {
+            return res.status(404).json({message: 'Utilisateur non trouvé.'});
+        }
+
+        existingUser.name = name;
+        existingUser.email = email;
+        await existingUser.save();
+
+        res.status(200).json({
+            message: 'Mise à jour de l\'utilisateur réussie.',
+            user: {
+                name: existingUser.name,
+                email: existingUser.email
+            }
+        });
+    } catch (error) {
+        res.status(500).json({error: error.message});
+    }
+};
+
+// Supprimer un utilisateur
+export const deleteUser = async (req, res) => {
+    const userId = req.params.id;
+
+    try {
+        // Vérifier si l'utilisateur existe
+        const existingUser = await User.findById(userId);
+        if (!existingUser) {
+            return res.status(404).json({message: 'Utilisateur non trouvé.'});
+        }
+
+        // Supprimer l'utilisateur de la base de données
+        await existingUser.deleteOne();
+
+        res.status(200).json({message: 'Utilisateur supprimé avec succès.'});
+    } catch (error) {
+        res.status(500).json({error: error.message});
+    }
+};

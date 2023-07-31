@@ -3,6 +3,8 @@ import bodyParser from 'body-parser';
 import morgan from 'morgan';
 import dotenv from 'dotenv';
 import mongoose from "mongoose";
+import * as fs from "fs";
+import * as path from "path";
 
 // Charger les variables d'environnement à partir du fichier .env
 dotenv.config();
@@ -12,10 +14,16 @@ const app = express();
 
 // Utiliser les middlewares
 app.use(bodyParser.json()); // Parser les requêtes JSON
-app.use(bodyParser.urlencoded({ extended: false })); // Parser les requêtes URL-encoded
-app.use(morgan('dev')); // Utiliser le middleware de journalisation en mode développement
+app.use(bodyParser.urlencoded({extended: false})); // Parser les requêtes URL-encoded
+
+// Créer un fichier de log pour les erreurs
+const errorLogStream = fs.createWriteStream(path.join(__dirname, 'error.log'), {flags: 'a'});
+
+// Utiliser le middleware de journalisation "morgan" avec une configuration personnalisée
+app.use(morgan('combined', {stream: errorLogStream}));
 
 
+// Import des routeurs
 import userRouter from './routes/user.js';
 
 app.use('/api/users', userRouter);

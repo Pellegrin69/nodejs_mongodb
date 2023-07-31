@@ -2,7 +2,7 @@ import express from 'express';
 
 const router = express.Router()
 
-const usersController = require('../controllers/users')
+const usersController = require('../controllers/user.js')
 
 
 router.get('/', usersController.getAllUsers);

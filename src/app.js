@@ -45,7 +45,7 @@ app.use((err, req, res, next) => {
 
 mongoose.connect(process.env.MONGO_CONNECTION_STRING)
     .then(() => {
-        console.log('App is succesfully connected to mongo');
+        console.log('App is successfully connected to mongo');
         app.listen(process.env.PORT, () => {
             console.log(`App is listening on port ${process.env.PORT}`)
         })

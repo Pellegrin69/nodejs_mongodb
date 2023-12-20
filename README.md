@@ -87,3 +87,36 @@ dans les API REST.
 Exemple :
 Les API REST sont sans état par nature, et mon projet suit cette approche car chaque requête contient toutes les
 informations nécessaires pour traiter la requête sans avoir besoin de conserver un état de session.
+
+
+## CI/CD 
+
+### Intégration Continue (CI)
+
+Ce projet utilise GitHub Actions pour automatiser le processus d'intégration continue (CI). Le workflow CI est déclenché automatiquement sur chaque pull request vers la branche principale. Voici comment reproduire les étapes du CI localement :
+
+#### Étapes pour la CI
+
+1. **Cloner le dépôt**
+   ```bash
+   git clone https://github.com/votre-utilisateur/votre-projet.git
+   
+   
+2. **Installer les dépendances**
+   ```bash
+   npm install   
+   
+
+3. **Linter le code**
+   ```bash
+   npm lint
+
+4. **Apporter des modifications**
+
+* Créer une nouvelle branche et ajouter des modifications dessus.
+* Commit et push ces modifications sur la nouvelle branche
+
+5. **Pull Request**
+
+* Créer une Pull Request sur GitHub, pour apporter les modifications de la nouvelle branche sur la branche main et ainsi déclencher la CI.
+

@@ -1,25 +1,45 @@
-name: CI
+name: CI/CD
 
 on:
-  pull_request:
-    branches:
-      - main
+  - pull_request
 
 jobs:
   build:
     runs-on: ubuntu-22.04
+    env:
+      IMAGE_NAME: "mynode:14"
 
     steps:
       - name: Checkout Repository
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
 
-      - name: Set up Node.js
-        uses: actions/setup-node@v3
-        with:
-          node-version: 14
+      - name: Build my Nodejs Docker image
+        run: docker image build --tag="${IMAGE_NAME}" ./
 
-      - name: Install Dependencies
-        run: npm install
+      - name: Testing
+        run: docker container run "${IMAGE_NAME}" npm test
 
       - name: Linting
-        run: npm run lint
+        run: docker container run "${IMAGE_NAME}" npm run lint
+
+  deploy:
+    runs-on: ubuntu-22.04
+    needs: build
+    if: github.event_name == 'pull_request' && github.event.pull_request.base.ref == 'main' && needs.build.result == 'success'
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v3
+
+      - name: Login to Docker Hub
+        uses: docker/login-action@v2
+        with:
+          username: doublep3
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+      - name: Push Docker Image
+        uses: docker/build-push-action@v4
+        with:
+          push: true
+          context: ./
+          tags: doublep3/nodejs_mongodb:latest

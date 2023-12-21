@@ -92,11 +92,12 @@ informations nécessaires pour traiter la requête sans avoir besoin de conserve
 
 ### Intégration Continue
 
-Ce projet utilise GitHub Actions pour automatiser le processus d'intégration continue (CI). Le workflow CI est déclenché
-automatiquement sur chaque pull request vers la branche principale. Voici comment reproduire les étapes du CI
-localement :
+Ce projet utilise GitHub Actions pour automatiser le processus d'intégration continue (CI).
+Le workflow CI est déclenché automatiquement sur chaque pull request. 
 
 #### Étapes pour la CI
+
+Voici comment reproduire les étapes du CI localement :
 
 1. **Cloner le dépôt**
    ```bash
@@ -118,19 +119,9 @@ localement :
    npm test
    ```
 
-5. **Apporter des modifications**
-
-    * Créer une nouvelle branche et ajouter des modifications dessus.
-    * Commit et push ces modifications sur la nouvelle branche;
-
-
-6. **Pull Request**
-
-    * Créer une Pull Request sur GitHub, pour apporter les modifications de la nouvelle branche sur la branche main et
-      ainsi déclencher la CI.
-
-
 ### Déploiement Continu (CD)
 
+Le déploiement continu permet de créer une nouvelle image Docker et de la pousser sur Docker Hub.
+Le workflow est déclenché si une Pull Request est faite sur GitHub vers la branche *main* et si le job *build* du CI a réussi.
 
 ### Livraison Continue (CD)

@@ -29,6 +29,6 @@ jobs:
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v1
         with:
-          files: dist/release.txt
+          files: ./release.txt
           tag_name: ${{ github.ref_name }}
-          title: Release ${{ github.ref_name }}
+          name: Release ${{ github.ref_name }}

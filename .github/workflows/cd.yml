@@ -1,0 +1,34 @@
+name: CD
+
+on:
+  push:
+    tags:
+      - '*'
+
+jobs:
+  deploy:
+    runs-on: ubuntu-22.04
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v3
+
+      - name: Login to Docker Hub
+        uses: docker/login-action@v2
+        with:
+          username: doublep3
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+      - name: Push Docker Image
+        uses: docker/build-push-action@v4
+        with:
+          push: true
+          context: ./
+          tags: doublep3/nodejs_mongodb:${{ github.ref_name }}
+
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v1
+        with:
+          files: dist/release.txt
+          tag_name: ${{ github.ref_name }}
+          title: Release ${{ github.ref_name }}
